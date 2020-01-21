@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_demo/DemoStateWidget.dart';
+import 'package:flutter_app_demo/ControllerDemoPage.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(new MyApp());
+
+const routerName = [
+  "Controller 例子",
+];
+
+Map<String, WidgetBuilder> routers = {
+  "widget/controller": (context) {
+    return new ControllerDemoPage();
+  },
+};
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -12,7 +22,49 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: DemoStateWidget('Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Demo'),
+      routes: routers,
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    var routeLists = routers.keys.toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: new Container(
+        child: new ListView.builder(
+          itemBuilder: (context, index) {
+            return new InkWell(
+              onTap: () {
+                Navigator.of(context).pushNamed(routeLists[index]);
+              },
+              child: new Card(
+                child: new Container(
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.symmetric(horizontal: 10),
+                  height: 50,
+                  child: new Text(routerName[index]),
+                ),
+              ),
+            );
+          },
+          itemCount: routers.length,
+        ),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
